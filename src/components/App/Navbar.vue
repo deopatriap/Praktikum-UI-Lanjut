@@ -20,6 +20,7 @@ const menus = [
       { name: 'Category', path: '/browse/category' },
     ],
   },
+  { name: 'Organizer Dashboard', path: '/dashboard' },
   { name: 'Contact', path: '/contact' },
 ]
 

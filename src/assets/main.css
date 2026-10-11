@@ -1,5 +1,28 @@
 @import './base.css';
 
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --primary: #6644ff;
+  --primary-hover: #5533ee;
+  --text-main: #1c1948;
+  --text-muted: #666;
+  --bg-light: #fdfdfd;
+  --bg-gray: #f4f4f5;
+  --border-color: #e4e4e7;
+}
+
 #app {
   min-height: 100vh;
+}
+
+body {
+  overflow-x: hidden;
 }
