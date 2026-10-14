@@ -1,3 +1,8 @@
+<script setup>
+import AppButton from '@/components/ui/AppButton.vue'
+import AppCard from '@/components/ui/AppCard.vue'
+</script>
+
 <template>
   <div class="event-detail-page">
     <button @click="$router.push('/browse/events')" class="btn-back">&larr; Back to Events</button>
@@ -14,18 +19,19 @@
 
     <!-- ASYMMETRICAL LAYOUT -->
     <div class="detail-content grid-asymmetric">
-      <!-- F-PATTERN: Breaking text with Headings & Bullet Points -->
+      <!-- F-Pattern: Breaking text with Headings & Bullet Points -->
       <div class="main-desc">
         <h2>About This Event</h2>
         <p>
-          Welcome to the biggest web interface development training event of the year!
-          Gatherly is collaborating with the local developer community to host a comprehensive workshop
-          designed specifically to bring together professionals, enthusiasts, and students.
+          Welcome to the biggest web interface development training event of the year! Gatherly is
+          collaborating with the local developer community to host a comprehensive workshop designed
+          specifically to bring together professionals, enthusiasts, and students.
         </p>
         <p>
-          In this session, we will discuss various current industry challenges, dissect the implementation
-          of Single Page Applications (SPA), and practice hands-on Layout System design prioritizing visual hierarchy.
-          You will gain practical insights that can be directly applied to your future projects or career.
+          In this session, we will discuss various current industry challenges, dissect the
+          implementation of Single Page Applications (SPA), and practice hands-on Layout System
+          design prioritizing visual hierarchy. You will gain practical insights that can be
+          directly applied to your future projects or career.
         </p>
 
         <h2>Event Agenda</h2>
@@ -40,14 +46,16 @@
 
       <!-- FOCAL POINT & STICKY PANE -->
       <div class="sidebar">
-        <div class="ticket-card sticky-pane">
+        <AppCard class="ticket-card sticky-pane">
           <h3>Attendee Registration</h3>
           <p class="price">Free</p>
           <p class="ticket-desc">Secure your seat now before the quota is full.</p>
+
           <!-- STRONGEST FOCAL POINT -->
-          <button class="btn-register">Register Now</button>
+          <AppButton variant="primary" class="btn-register"> Register Now </AppButton>
+
           <p class="spots">Only 12 seats left!</p>
-        </div>
+        </AppCard>
       </div>
     </div>
   </div>
@@ -127,11 +135,7 @@
 
 /* FOCAL POINT CARD */
 .ticket-card {
-  background: white;
   padding: var(--space-8);
-  border-radius: var(--space-4);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
   text-align: center;
 }
 
@@ -156,21 +160,10 @@
   margin-bottom: var(--space-6);
 }
 
-/* STRONGEST FOCAL POINT */
 .btn-register {
   width: 100%;
-  padding: var(--space-4);
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
 }
-.btn-register:hover {
-  background: var(--primary-hover);
-}
+
 .spots {
   margin-top: var(--space-4);
   color: #e63946;
