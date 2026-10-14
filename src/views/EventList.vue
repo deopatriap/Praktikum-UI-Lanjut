@@ -38,7 +38,7 @@ const events = [
     date: 'Nov 20, 2026',
     loc: '📍 Grand Hotel Hall',
     cat: 'Seminar',
-    desc: 'An in-depth seminar exploring modern strategies, from SEO optimization to user conversion tactics.',
+    desc: 'An in-depth seminar dissecting modern digital marketing strategies, from SEO optimization to user conversion tactics.',
   },
   {
     id: 6,
@@ -55,15 +55,16 @@ const events = [
   <div class="event-list-page">
     <div class="header-section">
       <h2 class="section-title">Upcoming Events</h2>
-      <p class="section-desc">
-        Discover workshops, seminars, tech meetups, and competitions near you.
-      </p>
+      <p class="section-desc">Discover workshops, seminars, tech meetups, and competitions near you.</p>
     </div>
 
+    <!-- LAYOUT SYSTEM: ADAPTIVE GRID -->
     <div class="event-grid">
-      <article v-for="event in events" :key="event.id" class="event-card">
+      <!-- VISUAL HIERARCHY: GROUPING & COMMON REGIONS -->
+      <div class="event-card" v-for="event in events" :key="event.id">
         <div class="event-body">
           <div class="event-meta">
+            <!-- LABEL CONTRAST: Recognition over Recall -->
             <span class="event-date">{{ event.date }}</span>
             <span class="event-category">{{ event.cat }}</span>
           </div>
@@ -71,116 +72,111 @@ const events = [
           <p class="event-loc">{{ event.loc }}</p>
           <p class="event-desc">{{ event.desc }}</p>
           <div class="card-footer">
-            <RouterLink :to="`/browse/events/${event.id}`" class="btn-link">
-              View Event Details &rarr;
-            </RouterLink>
+            <router-link :to="`/browse/events/${event.id}`" class="btn-link">View Event Details &rarr;</router-link>
           </div>
         </div>
-      </article>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.event-list-page {
-  animation: fadeIn 0.5s ease;
-}
-
 .header-section {
   margin-bottom: var(--space-8);
 }
-
 .section-title {
-  margin: 0 0 var(--space-2);
-  color: var(--text-main);
-  font-size: 2rem;
+  font-size: 2.2rem;
+  margin-bottom: var(--space-2);
 }
-
 .section-desc {
-  margin: 0;
   color: var(--text-muted);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
+/* ADAPTIVE GRID */
 .event-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-6);
 }
 
+/* COMMON REGIONS */
 .event-card {
-  border: 1px solid var(--border-color);
+  background: white;
   border-radius: var(--space-4);
-  box-shadow: 0 4px 15px rgb(0 0 0 / 2%);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* PROXIMITY */
 .event-body {
-  height: 100%;
   padding: var(--space-6);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .event-meta {
   display: flex;
   justify-content: space-between;
-  gap: var(--space-2);
+  align-items: center;
   margin-bottom: var(--space-4);
 }
 
-.event-date,
-.event-category {
+.event-date {
+  background: rgba(102, 68, 255, 0.1);
   color: var(--primary);
-  font-size: 0.85rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 6px;
   font-weight: 600;
+  font-size: 0.85rem;
 }
 
+.event-category {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
 .event-title {
-  margin: 0 0 var(--space-2);
-  color: var(--text-main);
-  font-size: 1.3rem;
+  margin-bottom: var(--space-2);
+  font-size: 1.4rem;
 }
-
-.event-loc,
-.event-desc {
+.event-loc {
   color: var(--text-muted);
   font-size: 0.95rem;
+  margin-bottom: var(--space-4);
 }
-
 .event-desc {
-  flex: 1;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: var(--space-6);
+  flex-grow: 1;
 }
 
 .card-footer {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
   border-top: 1px solid var(--border-color);
+  padding-top: var(--space-4);
 }
 
 .btn-link {
-  color: var(--primary);
+  color: var(--text-main);
   font-weight: 600;
   text-decoration: none;
 }
 
 .btn-link:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 480px) {
-  .event-meta {
-    flex-wrap: wrap;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  color: var(--primary);
 }
 </style>
