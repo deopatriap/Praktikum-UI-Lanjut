@@ -1,177 +1,124 @@
-<script setup>
-const registrations = [
-  {
-    name: 'John Doe',
-    event: 'Vue.js Mastery Workshop',
-    date: 'Oct 12, 2026',
-    status: 'Confirmed',
-  },
-  {
-    name: 'Jane Smith',
-    event: 'National Tech Meetup',
-    date: 'Oct 15, 2026',
-    status: 'Confirmed',
-  },
-  {
-    name: 'Alex Johnson',
-    event: 'Startup Pitch Competition',
-    date: 'Nov 02, 2026',
-    status: 'Pending',
-  },
-  {
-    name: 'Taylor Brown',
-    event: 'UI/UX Design Sprint',
-    date: 'Nov 10, 2026',
-    status: 'Confirmed',
-  },
-  {
-    name: 'Morgan Lee',
-    event: 'Digital Marketing Seminar',
-    date: 'Nov 20, 2026',
-    status: 'Confirmed',
-  },
-]
-</script>
-
 <template>
   <div class="dashboard-overview">
     <h2>Welcome back, Organizer</h2>
 
+    <!-- GROUPING & PROXIMITY:
+         Data metrik dikelompokkan ke dalam kartu agar mudah dibaca sekilas. -->
     <div class="metrics-grid">
-      <article class="metric-card">
+      <div class="metric-card">
         <h3>Total Tickets Sold</h3>
         <p class="metric-value">1,245</p>
-      </article>
-      <article class="metric-card">
+      </div>
+      <div class="metric-card">
         <h3>Page Views</h3>
         <p class="metric-value">8,302</p>
-      </article>
-      <article class="metric-card">
+      </div>
+      <div class="metric-card">
         <h3>Revenue</h3>
         <p class="metric-value">$12,450</p>
-      </article>
+      </div>
     </div>
 
-    <section class="data-table-container">
+    <!-- DATA DENSITY & F-PATTERN:
+         Penggunaan tabel untuk memaksimalkan kepadatan informasi agar mata
+         dapat melakukan scanning baris demi baris (F-Pattern) -->
+    <div class="data-table-container">
       <h3>Recent Registrations</h3>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Attendee Name</th>
-              <th>Event</th>
-              <th>Registration Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="registration in registrations" :key="registration.name">
-              <td>{{ registration.name }}</td>
-              <td>{{ registration.event }}</td>
-              <td>{{ registration.date }}</td>
-              <td>
-                <span class="status-badge" :class="registration.status.toLowerCase()">
-                  {{ registration.status }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Attendee Name</th>
+            <th>Event</th>
+            <th>Registration Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="i in 5" :key="i">
+            <td>John Doe {{ i }}</td>
+            <td>Community Gathering {{ i }}</td>
+            <td>Oct 1{{ i }}, 2026</td>
+            <td><span class="status-badge">Confirmed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <style scoped>
 .dashboard-overview h2 {
-  margin: 0 0 var(--space-6);
+  margin-bottom: var(--space-6);
   color: var(--text-main);
 }
 
+/* GRID untuk menyusun metrik secara proporsional */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--space-6);
   margin-bottom: var(--space-8);
 }
 
 .metric-card {
-  padding: var(--space-6);
   background: white;
+  padding: var(--space-6);
+  border-radius: var(--space-3);
   border: 1px solid var(--border-color);
-  border-radius: var(--space-2);
-  box-shadow: 0 2px 8px rgb(0 0 0 / 3%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .metric-card h3 {
-  margin: 0;
+  font-size: 1rem;
   color: var(--text-muted);
-  font-size: 0.95rem;
-  font-weight: 500;
+  margin-bottom: var(--space-2);
 }
-
 .metric-value {
-  margin: var(--space-2) 0 0;
-  color: var(--text-main);
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   font-weight: 700;
+  color: var(--primary);
+  margin: 0;
 }
 
+/* TABLE STYLES - Mengutamakan kerapian baris untuk Data Density */
 .data-table-container {
-  padding: var(--space-6);
   background: white;
+  padding: var(--space-6);
+  border-radius: var(--space-3);
   border: 1px solid var(--border-color);
-  border-radius: var(--space-2);
 }
 
 .data-table-container h3 {
-  margin: 0 0 var(--space-4);
-  color: var(--text-main);
-}
-
-.table-scroll {
-  overflow-x: auto;
+  margin-bottom: var(--space-4);
+  font-size: 1.2rem;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
 }
-
 .data-table th,
 .data-table td {
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border-color);
-  white-space: nowrap;
+  text-align: left;
 }
-
 .data-table th {
+  background: var(--bg-gray);
   color: var(--text-muted);
-  font-size: 0.85rem;
   font-weight: 600;
+  font-size: 0.9rem;
 }
-
 .data-table td {
   color: var(--text-main);
-}
-
-.data-table tbody tr:last-child td {
-  border-bottom: 0;
+  font-size: 0.95rem;
 }
 
 .status-badge {
-  display: inline-block;
+  background: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
   padding: var(--space-1) var(--space-2);
-  color: #166534;
-  background: #dcfce7;
-  border-radius: 999px;
+  border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
-}
-
-.status-badge.pending {
-  color: #854d0e;
-  background: #fef9c3;
 }
 </style>

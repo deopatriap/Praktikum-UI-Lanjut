@@ -1,4 +1,12 @@
 <script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import EventCard from '@/components/event/EventCard.vue'
+import SearchBar from '@/components/event/SearchBar.vue'
+import CategoryFilter from '@/components/event/CategoryFilter.vue'
+
+const router = useRouter()
+
 const events = [
   {
     id: 1,
@@ -38,7 +46,7 @@ const events = [
     date: 'Nov 20, 2026',
     loc: '📍 Grand Hotel Hall',
     cat: 'Seminar',
-    desc: 'An in-depth seminar exploring modern strategies, from SEO optimization to user conversion tactics.',
+    desc: 'An in-depth seminar dissecting modern digital marketing strategies, from SEO optimization to user conversion tactics.',
   },
   {
     id: 6,
@@ -49,6 +57,24 @@ const events = [
     desc: 'An exclusive year-end conference for community leaders to formulate sustainable ecosystem development strategies.',
   },
 ]
+
+const searchQuery = ref('')
+const selectedCategory = ref('All')
+const categories = ['All', 'Workshop', 'Meetup', 'Competition', 'Seminar', 'Conference']
+
+const filteredEvents = computed(() => {
+  return events.filter((event) => {
+    const matchSearch =
+      event.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      event.loc.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchCat = selectedCategory.value === 'All' || event.cat === selectedCategory.value
+    return matchSearch && matchCat
+  })
+})
+
+const handleViewDetail = (id) => {
+  router.push(`/browse/events/${id}`)
+}
 </script>
 
 <template>
@@ -60,127 +86,55 @@ const events = [
       </p>
     </div>
 
+    <div class="filters-section">
+      <SearchBar v-model="searchQuery" />
+      <CategoryFilter :categories="categories" v-model="selectedCategory" />
+    </div>
+
     <div class="event-grid">
-      <article v-for="event in events" :key="event.id" class="event-card">
-        <div class="event-body">
-          <div class="event-meta">
-            <span class="event-date">{{ event.date }}</span>
-            <span class="event-category">{{ event.cat }}</span>
-          </div>
-          <h3 class="event-title">{{ event.title }}</h3>
-          <p class="event-loc">{{ event.loc }}</p>
-          <p class="event-desc">{{ event.desc }}</p>
-          <div class="card-footer">
-            <RouterLink :to="`/browse/events/${event.id}`" class="btn-link">
-              View Event Details &rarr;
-            </RouterLink>
-          </div>
-        </div>
-      </article>
+      <EventCard
+        v-for="event in filteredEvents"
+        :key="event.id"
+        :event="event"
+        @view-detail="handleViewDetail"
+      />
+    </div>
+
+    <div v-if="filteredEvents.length === 0" class="empty-state">
+      <p>No events found matching your criteria.</p>
     </div>
   </div>
 </template>
 
 <style scoped>
-.event-list-page {
-  animation: fadeIn 0.5s ease;
-}
-
 .header-section {
   margin-bottom: var(--space-8);
 }
-
 .section-title {
-  margin: 0 0 var(--space-2);
-  color: var(--text-main);
-  font-size: 2rem;
+  font-size: 2.2rem;
+  margin-bottom: var(--space-2);
 }
-
 .section-desc {
-  margin: 0;
   color: var(--text-muted);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
+.filters-section {
+  margin-bottom: var(--space-6);
+}
+
+/* ADAPTIVE GRID */
 .event-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: var(--space-6);
 }
 
-.event-card {
-  border: 1px solid var(--border-color);
-  border-radius: var(--space-4);
-  box-shadow: 0 4px 15px rgb(0 0 0 / 2%);
-}
-
-.event-body {
-  height: 100%;
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-}
-
-.event-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-}
-
-.event-date,
-.event-category {
-  color: var(--primary);
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.event-title {
-  margin: 0 0 var(--space-2);
-  color: var(--text-main);
-  font-size: 1.3rem;
-}
-
-.event-loc,
-.event-desc {
+.empty-state {
+  text-align: center;
+  padding: var(--space-12);
   color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-.event-desc {
-  flex: 1;
-}
-
-.card-footer {
-  margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border-color);
-}
-
-.btn-link {
-  color: var(--primary);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.btn-link:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 480px) {
-  .event-meta {
-    flex-wrap: wrap;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  background: var(--bg-light);
+  border-radius: var(--space-4);
 }
 </style>
