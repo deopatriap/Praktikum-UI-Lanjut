@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const isScrolled = ref(false)
@@ -15,27 +15,32 @@ const menus = [
       {
         name: 'Event List',
         path: '/browse/events',
-        children: [{ name: 'Event Detail (Sample)', path: '/browse/events/1' }],
       },
       { name: 'Category', path: '/browse/category' },
+      { name: 'Your Events', path: '/browse/your-events' },
     ],
   },
-  { name: 'Organizer Dashboard', path: '/dashboard' },
   { name: 'Contact', path: '/contact' },
+  { name: 'Organizer Dashboard', path: '/dashboard' },
 ]
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 10
 }
 
-onMounted(() => window.addEventListener('scroll', handleScroll))
-onUnmounted(() => window.removeEventListener('scroll', handleScroll))
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
   <nav class="navbar" :class="{ scrolled: isScrolled }">
     <div class="navbar-container">
-      <RouterLink to="/" class="logo">
+      <router-link to="/" class="logo">
         <svg
           width="28"
           height="32"
@@ -54,11 +59,11 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
           />
         </svg>
         <span class="logo-text">Gatherly</span>
-      </RouterLink>
+      </router-link>
 
       <ul class="nav-menu">
-        <li v-for="menu in menus" :key="menu.name" class="nav-item">
-          <RouterLink
+        <li class="nav-item" v-for="menu in menus" :key="menu.name">
+          <router-link
             :to="menu.path"
             class="nav-link"
             :class="{
@@ -81,11 +86,12 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
             >
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-          </RouterLink>
+          </router-link>
 
+          <!-- First Level Dropdown -->
           <ul v-if="menu.children" class="dropdown-menu">
             <li v-for="child in menu.children" :key="child.name" class="dropdown-item">
-              <RouterLink :to="child.path" class="dropdown-link">
+              <router-link :to="child.path" class="dropdown-link">
                 {{ child.name }}
                 <svg
                   v-if="child.children"
@@ -101,12 +107,14 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
                 >
                   <polyline points="9 18 15 12 9 6"></polyline>
                 </svg>
-              </RouterLink>
+              </router-link>
+
+              <!-- Second Level Dropdown (Submenu) -->
               <ul v-if="child.children" class="submenu">
                 <li v-for="subchild in child.children" :key="subchild.name" class="submenu-item">
-                  <RouterLink :to="subchild.path" class="dropdown-link">
+                  <router-link :to="subchild.path" class="dropdown-link">
                     {{ subchild.name }}
-                  </RouterLink>
+                  </router-link>
                 </li>
               </ul>
             </li>
@@ -147,7 +155,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </div>
-        <button class="hamburger-btn" type="button" aria-label="Toggle navigation">
+
+        <button class="hamburger-btn">
           <svg
             width="24"
             height="24"
@@ -169,11 +178,12 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 </template>
 
 <style scoped>
+/* NAVBAR FULL-WIDTH menyatu dengan bagian atas layar */
 .navbar {
   width: 100%;
   background: var(--nav-bg, #1c1948);
   border-bottom: 1px solid var(--nav-border, #333);
-  box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
   z-index: 999;
@@ -193,6 +203,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 .navbar.scrolled {
   background: rgba(28, 25, 72, 0.9);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
@@ -200,28 +212,38 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
+  color: var(--text-white, #fff);
+  padding-right: 2rem;
+  transition: transform 0.3s ease;
 }
 
-.logo-text {
-  color: white;
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+.logo:hover {
+  transform: translateY(-2px);
 }
 
 .logo-icon {
-  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 20%));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo:hover .logo-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.logo-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .nav-menu {
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  flex: 1;
-  justify-content: center;
   list-style: none;
   margin: 0;
   padding: 0;
+  flex: 1;
+  justify-content: center;
 }
 
 .nav-item {
@@ -229,7 +251,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 1rem 0;
+  padding: 1rem 0; /* Memberi ruang hover */
 }
 
 .nav-link {
@@ -245,82 +267,101 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   transition: all 0.3s ease;
 }
 
-.nav-link:hover,
 .nav-link.active {
-  background: rgb(255 255 255 / 10%);
-  color: white;
+  background-color: var(--primary, #6644ff);
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(102, 68, 255, 0.3);
 }
 
-.dropdown-menu,
-.submenu {
-  display: none;
+.nav-link.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 68, 255, 0.5);
+}
+
+.nav-link:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.dropdown-indicator {
+  transition: transform 0.3s ease;
+}
+
+.nav-item:hover .dropdown-indicator {
+  transform: rotate(180deg);
+}
+
+/* =========================================
+   DROPDOWN & SUBMENU STYLES
+   Inspired by user reference image
+   ========================================= */
+.dropdown-menu {
+  display: none; /* diubah jadi block saat hover */
   position: absolute;
-  background-color: #d8d8d8;
-  min-width: 220px;
+  top: 100%;
+  left: 0;
+  background-color: #d8d8d8; /* warna abu seperti referensi */
+  min-width: 200px;
   list-style: none;
   padding: 0;
   margin: 0;
-  box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
 
-.dropdown-menu {
-  top: 100%;
-  left: 0;
-}
-
-.nav-item:hover > .dropdown-menu {
+/* Tampilkan dropdown Level 1 saat nav-item di-hover */
+.nav-item:hover .dropdown-menu {
   display: block;
   animation: fadeIn 0.2s ease-out;
 }
 
 .dropdown-item {
-  position: relative;
+  position: relative; /* relative untuk submenu absolut */
 }
 
 .dropdown-link {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  color: #333;
+  align-items: center;
+  padding: 12px 20px;
   text-decoration: none;
-  white-space: nowrap;
-  transition: background-color 0.2s;
+  color: #333; /* text gelap */
+  font-size: 0.95rem;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .dropdown-link:hover {
-  background-color: #c0c0c0;
+  background-color: #c4c4c4; /* efek hover lebih gelap sedikit */
+  color: #000;
 }
 
+/* Hilangkan border bawah pada item terakhir */
+.dropdown-item:last-child .dropdown-link {
+  border-bottom: none;
+}
+
+/* Submenu (Level 2) */
 .submenu {
+  display: none;
+  position: absolute;
   top: 0;
   left: 100%;
+  background-color: #d8d8d8;
+  min-width: 220px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
-.dropdown-item:hover > .submenu {
+/* Tampilkan submenu Level 2 saat dropdown-item di-hover */
+.dropdown-item:hover .submenu {
   display: block;
   animation: fadeIn 0.2s ease-out;
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.lang-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-}
-
-.hamburger-btn {
-  display: none;
-  color: white;
-  background: none;
-  border: 0;
 }
 
 @keyframes fadeIn {
@@ -334,27 +375,76 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll))
   }
 }
 
+/* Submenu pada parent (jika left:100% terlalu mentok layar)
+   Kita bisa membiarkannya default left 100%.
+*/
+
+/* =========================================
+   RIGHT SECTION
+   ========================================= */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.lang-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-white, #fff);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.lang-selector:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lang-selector:hover .chevron {
+  transform: translateY(2px);
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+  margin-top: 2px;
+}
+
+.hamburger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  color: var(--text-white, #fff);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hamburger-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
 @media (max-width: 900px) {
   .nav-menu {
-    gap: 0.5rem;
-  }
-
-  .nav-link {
-    padding: 0.5rem 0.75rem;
+    gap: 1rem;
   }
 }
 
-@media (max-width: 700px) {
-  .navbar-container {
-    padding: 0.85rem 1rem;
-  }
-
+@media (max-width: 768px) {
   .nav-menu {
     display: none;
   }
-
-  .hamburger-btn {
-    display: block;
+  .lang-selector {
+    display: none;
   }
 }
 </style>
